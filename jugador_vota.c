@@ -1,45 +1,55 @@
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
+#include <time.h>
 
-#define PIPE_PATH "./votos_pipe"
+#define PIPE_PATH "pipes"
+
+int generar_numero_aleatorio(int maxJugadores) {
+
+    return  (rand() % maxJugadores) + 1;
+}
+
 
 int main(int argc, char *argv[]) {
-    int fd, voto;
+    int fd, voto,jugador;
 
     // Verificar que se haya pasado el número de jugador a votar
-    if (argc != 2) {
+    if (argc != 3) {
         fprintf(stderr, "Uso: %s <jugador_a_eliminar>\n", argv[0]);
         exit(EXIT_FAILURE);
     }
 
-    voto = atoi(argv[1]); // Convertir el argumento en un número entero
-       
-    // Verificar que el voto sea válido y que el jugador no esté votando por sí mismo
-    // Nota: Se asume que el número del jugador se pasa como argumento y no como el PID
-    // Esto debe ser ajustado según la lógica del juego
-    int jugador_num = getpid(); // Este es un ejemplo, debes usar la lógica correcta para obtener el número del jugador
+    jugador = atoi(argv[1]); // Convertir el argumento en un número entero   
+    jugador--;
 
-    if (voto < 1 || voto == jugador_num) {
-        fprintf(stderr, "Número de jugador inválido o el jugador no puede votar por sí mismo.\n");
-        exit(EXIT_FAILURE);
-    }
-
-    printf("El jugador %d ha votado.\n", voto);
-
+   int  maxJugadores = atoi(argv[2]);
+    printf("El jugador %d ha votado.\n", jugador);
     // Abrir la tubería en modo de solo escritura
-    
-    fd = open(PIPE_PATH, O_WRONLY);
+    char PIPE_PATH_USER[100];
+    sprintf(PIPE_PATH_USER,"%s/%d",PIPE_PATH,jugador);
+
+    fd = open(PIPE_PATH_USER, O_WRONLY);
     if (fd == -1) {
         perror("Error al abrir la tubería para escribir");
        //exit(EXIT_FAILURE);
     }
 
     // Enviar el voto a través de la tubería
+
+
+    unsigned int seed = time(NULL) ^ (getpid() << 16) ^ (uintptr_t)&seed;
+    srand(seed);
+
+
+
+    voto = generar_numero_aleatorio(maxJugadores);
+
     if (write(fd, &voto, sizeof(voto)) < 0) {
         perror("Error al enviar el voto");
         exit(EXIT_FAILURE);

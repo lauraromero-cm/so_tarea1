@@ -7,9 +7,27 @@
 #include <sys/wait.h>
 
 #define MAX_JUGADORES 100
-#define PIPE_PATH "./votos_pipe"
+#define PIPE_PATH "pipes"
 
-int main() {
+int main(int argc, char *argv[]) {
+
+
+    if (argc!=1){
+        printf("Error en la cantidad de argumentos \n");
+        exit(1);
+    }
+
+
+
+    int jugadores = atoi(*argv);
+
+    if (jugadores>=MAX_JUGADORES ){
+          printf("Supera la cantidad de jugadores maximos \n");
+        exit(1);
+    }
+
+
+
     int fd, votos[MAX_JUGADORES] = {0}; 
     for (int ix=0;ix < MAX_JUGADORES; ix++){
         votos[ix]=0;
@@ -20,18 +38,25 @@ int main() {
     // Crear la tubería con nombre
     // mkfifo(PIPE_PATH, 0666);
 
+    char PIPE_PATH_USER[100];
+
     // Abrir la tubería en modo de solo lectura
-    fd = open(PIPE_PATH, O_RDONLY);
 
     // Leer los votos desde la tubería
-    for (i = 0; i < MAX_JUGADORES; i++) {
+    for (i = 0; i < jugadores; i++) {
+
+        sprintf(PIPE_PATH_USER,"%s/%d",PIPE_PATH,i);
+    
+        fd = open(PIPE_PATH_USER, O_RDONLY);
+    
         if (read(fd, &voto, sizeof(voto)) > 0) {
-            if (voto >= 1 && voto <= MAX_JUGADORES) {
+            if (voto >= 1 && voto <= jugadores) {
                 votos[voto - 1]++; // Incrementar el conteo de votos para el jugador
             } else {
                 printf("Voto inválido recibido: %d\n", voto);
             }
         }
+        close(fd);
     }
 
     // Determinar el jugador con mayor cantidad de votos
@@ -50,9 +75,9 @@ int main() {
         printf("No se recibieron votos válidos.\n");
     }
 
-    wait(NULL); // Esperar a que todos los procesos hijos terminen
-    close(fd); // Cerrar la tubería
-    unlink(PIPE_PATH); // Eliminar la tubería con nombre
+    // wait(NULL); // Esperar a que todos los procesos hijos terminen
+    // close(fd); // Cerrar la tubería
+    // unlink(PIPE_PATH); // Eliminar la tubería con nombre
 
     return 0;
 }
