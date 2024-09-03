@@ -11,6 +11,10 @@
 
 int main() {
     int fd, votos[MAX_JUGADORES] = {0}; 
+    for (int ix=0;ix < MAX_JUGADORES; ix++){
+        votos[ix]=0;
+    }
+
     int voto, i, jugador_eliminado = -1, mayor_votos = 0;
 
     // Crear la tubería con nombre
