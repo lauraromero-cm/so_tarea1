@@ -9,6 +9,9 @@
 #define MAX_JUGADORES 100
 #define PIPE_PATH "pipes"
 
+
+//PROCESO OBSERVSADOR (GESTOR DE VOTOS)
+
 int main(int argc, char *argv[]) {
 
 
@@ -27,20 +30,13 @@ int main(int argc, char *argv[]) {
     }
 
 
-
     int fd, votos[MAX_JUGADORES] = {0}; 
     for (int ix=0;ix < MAX_JUGADORES; ix++){
         votos[ix]=0;
     }
 
     int voto, i, jugador_eliminado = -1, mayor_votos = 0;
-
-    // Crear la tubería con nombre
-    // mkfifo(PIPE_PATH, 0666);
-
     char PIPE_PATH_USER[100];
-
-    // Abrir la tubería en modo de solo lectura
 
     // Leer los votos desde la tubería
     for (i = 0; i < jugadores; i++) {
@@ -70,14 +66,13 @@ int main(int argc, char *argv[]) {
     // Mostrar el resultado
     if (jugador_eliminado != -1) {
         printf("El Jugador %d ha sido eliminado con %d votos.\n", jugador_eliminado, mayor_votos);
-        execl("./amurre", "amurre", NULL);
+
+        //no se va al exec
+
+        execl("./amurra_y_reclama", "amurra_y_reclama", NULL);
     } else {
         printf("No se recibieron votos válidos.\n");
     }
-
-    // wait(NULL); // Esperar a que todos los procesos hijos terminen
-    // close(fd); // Cerrar la tubería
-    // unlink(PIPE_PATH); // Eliminar la tubería con nombre
 
     return 0;
 }

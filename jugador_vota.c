@@ -55,7 +55,6 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
-   // wait(NULL); // Esperar a que el gestor termine
 
     close(fd); // Cerrar la tubería
 
