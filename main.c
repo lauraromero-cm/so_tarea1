@@ -70,7 +70,7 @@ void FolderPipes(int N) {
 
     char PIPE_PATH_USER[100];
     for (int i = 0; i < N; i++) {
-        sprintf(PIPE_PATH_USER, "%s/%d", PIPE_PATH, i);  // construir la ruta para cada pipe
+        sprintf(PIPE_PATH_USER, "%s/j-g_%d", PIPE_PATH, i);  // construir la ruta para cada pipe
         if (access(PIPE_PATH_USER, F_OK) == 0) {
             // si la pipe ya existe, se elimina
             if (unlink(PIPE_PATH) != 0) {
@@ -81,6 +81,19 @@ void FolderPipes(int N) {
             }
         }
         mkfifo(PIPE_PATH_USER, 0666);  // crear una nueva named pipe
+
+        sprintf(PIPE_PATH_USER, "%s/g-j_%d", PIPE_PATH, i);  // construir la ruta para cada pipe
+        if (access(PIPE_PATH_USER, F_OK) == 0) {
+            // si la pipe ya existe, se elimina
+            if (unlink(PIPE_PATH) != 0) {
+                perror("Error al eliminar el archivo FIFO");
+                exit(EXIT_FAILURE);
+            } else {
+                printf("FIFO existente eliminada.\n");
+            }
+        }
+        mkfifo(PIPE_PATH_USER, 0666);  // crear una nueva named pipe
+
     }
 }
 
