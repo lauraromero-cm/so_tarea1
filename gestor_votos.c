@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
             if (read(fd[0][i], &voto, sizeof(voto)) > 0)
             {
 
-                if (voto >= 1 && voto <= jugadores)
+                if (voto >= 0 && voto <= jugadores) //AQUI CAMBIE EL 1 POR UN CERO, PORQUE EL CERO JAMAS VOTABA
                 {
                     printf("VOTO RECIBIDO %d : %d \n",i,voto);
                     votos[voto]++; // Incrementar el conteo de votos para el jugador
@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
                     // printf("Voto inválido recibido: %d\n", voto);
                 }
             } else {
-                printf("No vi llegar el voto del ql :  %d\n", i);
+                printf("No vi llegar el voto del :  %d\n", i);
             }
             
         }
@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
         }
 
         
-        printf("EL BASTARDO ELIMINADO ES %d \n",jugador_eliminado);
+        printf("EL JUGADOR ELIMINADO ES %d \n",jugador_eliminado);
      
         // Mostrar el resultado
         Jugadores[jugador_eliminado] = 1;
@@ -118,6 +118,17 @@ int main(int argc, char *argv[])
         close(fd[1][jugador_eliminado]);
         
         printf("El Jugador %d ha sido eliminado con %d votos.\n", jugador_eliminado, votos[jugador_eliminado]);
+        // // Aquí llamamos a execlp después de eliminar al jugador
+        // printf("El Jugador %d está amurrado y reclamando...\n", jugador_eliminado);
+
+        // // Llamada al programa "amurra_y_reclama" después de la eliminación
+        // execlp("./amurra_y_reclama", "amurra_y_reclama", NULL);
+
+        // // Si execlp falla
+        // perror("Fallo al ejecutar el comando amurra_y_reclama");
+        // exit(EXIT_FAILURE);
+
+
         printf("Siguiente Ronda : Jugadores vivos :%d \n ", CantidadJugadoresVivo(Jugadores, jugadores));
 
     }

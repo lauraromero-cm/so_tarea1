@@ -38,16 +38,34 @@ int JugadorGanador(int *array, int n)
     return n;
 }
 
-int JugadorMax(int *array,int length, int pos){
-   int max = -1;
-   for (int ix = 0; ix < length ; ix++){
-            if (pos == ix){
-                continue;
-            }
-            if (array[ix] > max)
-            {
-                max = ix;
-            }
+// int JugadorMax(int *array,int length, int pos){
+//    int max = -1;
+//    for (int ix = 0; ix < length ; ix++){
+//             if (pos == ix){
+//                 continue;
+//             }
+//             if (array[ix] > max)
+//             {
+//                 max = ix;
+//             }
+//     }
+//     return  max;
+// }
+
+int JugadorMax(int *array, int length, int pos){
+    int max_votes = -1;   // Variable para almacenar el número máximo de votos
+    int jugador_max = -1; // Variable para almacenar el índice del jugador con más votos
+
+    for (int ix = 0; ix < length; ix++) {
+        if (pos == ix) {
+            continue;  // Saltar el jugador que ya se ha eliminado
+        }
+
+        if (array[ix] > max_votes) {  // Comparar con el número de votos más alto encontrado
+            max_votes = array[ix];    // Actualizar el número de votos más alto
+            jugador_max = ix;         // Actualizar el índice del jugador con más votos
+        }
     }
-    return  max;
+
+    return jugador_max;  // Devolver el índice del jugador con más votos
 }
