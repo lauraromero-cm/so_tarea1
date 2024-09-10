@@ -61,9 +61,7 @@ int main(int argc, char *argv[])
     sprintf(PIPE_PATH_USER, "%s/g-j", PIPE_PATH);
     ConnectMassivePipes(PIPE_PATH_USER,fd[1],jugadores,O_WRONLY);
   
-  
 
-  
     int voto, i, jugador_eliminado = -1, mayor_votos = 0;
 
     int ronda = 0;
@@ -87,14 +85,14 @@ int main(int argc, char *argv[])
             if (read(fd[0][i], &voto, sizeof(voto)) > 0)
             {
 
-                if (voto >= 0 && voto <= jugadores) //AQUI CAMBIE EL 1 POR UN CERO, PORQUE EL CERO JAMAS VOTABA
+                if (voto >= 0 && voto <= jugadores) // Verificar que el voto sea válido
                 {
                     printf("VOTO RECIBIDO %d : %d \n",i,voto);
                     votos[voto]++; // Incrementar el conteo de votos para el jugador
                 }
                 else
                 {
-                    // printf("Voto inválido recibido: %d\n", voto);
+                    printf("Voto inválido recibido: %d\n", voto);
                 }
             } else {
                 printf("No vi llegar el voto del :  %d\n", i);

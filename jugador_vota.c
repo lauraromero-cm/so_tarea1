@@ -69,7 +69,6 @@ int main(int argc, char *argv[]) {
 
     }
 
-
     close(fd[0]); // Cerrar la tubería
     close(fd[1]); 
 
