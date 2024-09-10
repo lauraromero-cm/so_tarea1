@@ -12,18 +12,12 @@
 #define MAX_JUGADORES 100
 #define PIPE_PATH "pipes"
 
-#include <stdlib.h>
-#include <time.h>
-
-#include <stdlib.h>
-#include <time.h>
-#include <unistd.h>  // para getpid()
 
 void esperar_musica(int ronda) {
-    // Semilla más variada usando el tiempo, el PID del proceso y el número de ronda
+    // semilla usando el tiempo, el PID del proceso y el numero de ronda
     srand(time(NULL) + getpid() + ronda);
 
-    // Generar un número aleatorio para determinar cuántas iteraciones hacer
+    // generar un numero aleatorio para determinar cuantas iteraciones hacer
     int iteraciones = rand() % 50000000 + 10000000;  // entre 10 y 50 millones de iteraciones
 
     printf("La música suena con %d iteraciones.\n", iteraciones);
