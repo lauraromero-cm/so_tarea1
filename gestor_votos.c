@@ -5,40 +5,13 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
+#include "lib/utils.h"
+#include "lib/pipes.h"
 
 #define MAX_JUGADORES 100
 #define PIPE_PATH "pipes"
 
-// PROCESO OBSERVADOR (GESTOR DE VOTOS)
 
-void ZeroArray(int *array, int n)
-{
-    for (int ix = 0; ix < n; ix++)
-    {
-        array[ix] = 0;
-    }
-}
-
-int CantidadJugadoresVivo(int *array, int n)
-{
-
-    int cantidad = n;
-    for (int ix = 0; ix < n; ix++)
-    {
-        cantidad -= array[ix];
-    }
-    return cantidad;
-}
-
-int JugadorGanador(int *array, int n)
-{
-    for (int ix = 0; ix < n; ix++)
-    {
-        if (array[ix]==0)
-        return ix;
-    }
-    return n;
-}
 
 
 int main(int argc, char *argv[])
@@ -58,26 +31,25 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    int fd[MAX_JUGADORES][2], votos[MAX_JUGADORES] = {0};
+    int fd[2][MAX_JUGADORES], votos[MAX_JUGADORES] = {0};
     int Jugadores[MAX_JUGADORES] = {0};
     char PIPE_PATH_USER[100];
 
+
     ZeroArray(Jugadores, jugadores);
+
+    sprintf(PIPE_PATH_USER, "%s/j-g", PIPE_PATH);
+    ConnectMassivePipes(PIPE_PATH_USER,fd[0],jugadores,O_RDONLY);
+
+    sprintf(PIPE_PATH_USER, "%s/g-j", PIPE_PATH);
+    ConnectMassivePipes(PIPE_PATH_USER,fd[1],jugadores,O_WRONLY);
+  
+  
+
+  
     int voto, i, jugador_eliminado = -1, mayor_votos = 0;
 
     int ronda = 0;
-
-    for (i = 0; i < jugadores; i++)
-        {
-
-               sprintf(PIPE_PATH_USER, "%s/j-g_%d", PIPE_PATH, i);
-               fd[i][0] = open(PIPE_PATH_USER, O_RDONLY);
-               sprintf(PIPE_PATH_USER, "%s/g-j_%d", PIPE_PATH, i);
-               fd[i][1] = open(PIPE_PATH_USER, O_WRONLY);
-               
-        }
-
-
 
     for (ronda = 0; CantidadJugadoresVivo(Jugadores, jugadores) > 1; ronda++)
     {
@@ -92,63 +64,62 @@ int main(int argc, char *argv[])
             {
                 continue;
             }
-      
 
-            if (read(fd[i][0], &voto, sizeof(voto)) > 0)
+            if (read(fd[0][i], &voto, sizeof(voto)) > 0)
             {
+
                 if (voto >= 1 && voto <= jugadores)
                 {
-                    votos[voto - 1]++; // Incrementar el conteo de votos para el jugador
+                    printf("VOTO RECIBIDO %d : %d \n",i,voto);
+                    votos[voto]++; // Incrementar el conteo de votos para el jugador
                 }
                 else
                 {
                     printf("Voto inválido recibido: %d\n", voto);
                 }
+            } else {
+                printf("No vi llegar el voto del ql :  %d\n", i);
             }
             
         }
 
         // Determinar el jugador con mayor cantidad de votos
-        for (i = 0; i < jugadores; i++)
-        {
-            if (votos[i] > mayor_votos)
-            {
-                mayor_votos = votos[i];
-                jugador_eliminado = i + 1; // Ajustar índice para representar al jugador real
-            }
-    
-        }
-        // Mostrar el resultado
-        if (jugador_eliminado != -1)
-        {
-            Jugadores[jugador_eliminado-1] = 1;
-            
-            for (int i=0;i<jugadores;i++){
-                if ( Jugadores[i]==1){
-                    continue;
-                }
 
-                if (write(fd[i][1], &jugador_eliminado, sizeof(jugador_eliminado)) < 0) {
-                    perror("Error al enviar el voto");
-                    exit(EXIT_FAILURE);
-                }
+        int jugador_eliminado = JugadorMax(votos,jugadores,-1);
 
-            }
-            close(fd[jugador_eliminado-1][0]);
-            close(fd[jugador_eliminado-1][1]);
-            printf("El Jugador %d ha sido eliminado con %d votos.\n", jugador_eliminado, mayor_votos);
-            //execl("./amurra_y_reclama", "amurra_y_reclama", NULL);
+        printf("EL JUGAR CON BAN ES  : %d\n",jugador_eliminado);
+        int jugador_eliminado2 = JugadorMax(votos,jugadores,jugador_eliminado);
+
+      
+
+        if (jugador_eliminado== jugador_eliminado2){
+            jugador_eliminado=-1;
+            sendMassive((fd[1]),-1,Jugadores,jugadores);
+            continue;
         }
-        else
-        {
+
+       if (jugador_eliminado == -1){
             printf("No se recibieron votos válidos.\n");
+            continue;
         }
 
+        
+        printf("EL BASTARDO ELIMINADO ES %d \n",jugador_eliminado);
+     
+        // Mostrar el resultado
+        Jugadores[jugador_eliminado] = 1;
+        sendMassive((fd[1]),jugador_eliminado,Jugadores,jugadores);
+        
+    
+
+        close(fd[0][jugador_eliminado]);
+        close(fd[1][jugador_eliminado]);
+        
+        printf("El Jugador %d ha sido eliminado con %d votos.\n", jugador_eliminado, votos[jugador_eliminado]);
         printf("Siguiente Ronda : Jugadores vivos :%d \n ", CantidadJugadoresVivo(Jugadores, jugadores));
 
     }
 
-    printf("EL GANADOR ES %d",JugadorGanador(Jugadores, jugadores));
-
+    printf("EL GANADOR ES: %d \n",JugadorGanador(Jugadores, jugadores));
     return 0;
 }
