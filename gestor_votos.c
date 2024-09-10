@@ -7,11 +7,34 @@
 #include <sys/wait.h>
 #include "lib/utils.h"
 #include "lib/pipes.h"
+#include <time.h>
 
 #define MAX_JUGADORES 100
 #define PIPE_PATH "pipes"
 
+#include <stdlib.h>
+#include <time.h>
 
+#include <stdlib.h>
+#include <time.h>
+#include <unistd.h>  // para getpid()
+
+void esperar_musica(int ronda) {
+    // Semilla más variada usando el tiempo, el PID del proceso y el número de ronda
+    srand(time(NULL) + getpid() + ronda);
+
+    // Generar un número aleatorio para determinar cuántas iteraciones hacer
+    int iteraciones = rand() % 50000000 + 10000000;  // entre 10 y 50 millones de iteraciones
+
+    printf("La música suena con %d iteraciones.\n", iteraciones);
+
+    // Simular la espera con un bucle de iteraciones vacías
+    for (int i = 0; i < iteraciones; i++) {
+        // Solo iterar para consumir tiempo
+    }
+
+    printf("La música ha terminado.\n");
+}
 
 
 int main(int argc, char *argv[])
@@ -128,6 +151,7 @@ int main(int argc, char *argv[])
         // perror("Fallo al ejecutar el comando amurra_y_reclama");
         // exit(EXIT_FAILURE);
 
+        esperar_musica(ronda);
 
         printf("Siguiente Ronda : Jugadores vivos :%d \n ", CantidadJugadoresVivo(Jugadores, jugadores));
 
@@ -135,6 +159,7 @@ int main(int argc, char *argv[])
     printf("\n");
     printf("EL GANADOR DEL JUEGO ES!!!!!: %d \n",JugadorGanador(Jugadores, jugadores));
     printf("\n");
+
 
     return 0;
 }
