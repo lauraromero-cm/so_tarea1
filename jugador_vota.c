@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
 
              if (read(fd[1], &voto, sizeof(voto)) > 0)
             {
-                printf("EL ELIMINADO FUE: %d \n",voto);
+                // printf("EL ELIMINADO FUE: %d \n",voto);
                 if (voto==jugador){
                     break;
                 }

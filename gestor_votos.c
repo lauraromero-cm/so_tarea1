@@ -53,7 +53,9 @@ int main(int argc, char *argv[])
 
     for (ronda = 0; CantidadJugadoresVivo(Jugadores, jugadores) > 1; ronda++)
     {
+        printf("\n");
         printf("RONDA N°%d Jugadores Vivos: %d \n", ronda+1, CantidadJugadoresVivo(Jugadores, jugadores));
+        printf("\n");
         ZeroArray(votos, MAX_JUGADORES);
 
 
@@ -75,7 +77,7 @@ int main(int argc, char *argv[])
                 }
                 else
                 {
-                    printf("Voto inválido recibido: %d\n", voto);
+                    // printf("Voto inválido recibido: %d\n", voto);
                 }
             } else {
                 printf("No vi llegar el voto del ql :  %d\n", i);
@@ -87,7 +89,7 @@ int main(int argc, char *argv[])
 
         int jugador_eliminado = JugadorMax(votos,jugadores,-1);
 
-        printf("EL JUGAR CON BAN ES  : %d\n",jugador_eliminado);
+        // printf("EL JUGAR CON BAN ES  : %d\n",jugador_eliminado);
         int jugador_eliminado2 = JugadorMax(votos,jugadores,jugador_eliminado);
 
       
@@ -119,7 +121,9 @@ int main(int argc, char *argv[])
         printf("Siguiente Ronda : Jugadores vivos :%d \n ", CantidadJugadoresVivo(Jugadores, jugadores));
 
     }
+    printf("\n");
+    printf("EL GANADOR DEL JUEGO ES!!!!!: %d \n",JugadorGanador(Jugadores, jugadores));
+    printf("\n");
 
-    printf("EL GANADOR ES: %d \n",JugadorGanador(Jugadores, jugadores));
     return 0;
 }
