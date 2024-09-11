@@ -12,6 +12,8 @@
 #define PIPE_PATH "pipes"
 #define MAX_JUGADORES 100
 
+//PROCESO JUGADORES
+
 int main(int argc, char *argv[])
 {
     int fd[2], voto, jugador;

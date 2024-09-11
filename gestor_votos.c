@@ -11,6 +11,8 @@
 #define MAX_JUGADORES 100
 #define PIPE_PATH "pipes"
 
+//PROCESO OBSEVADOR (GESTOR DE VOTOS)
+
 
 int main(int argc, char *argv[])
 {
@@ -57,9 +59,6 @@ int main(int argc, char *argv[])
         int tiempo_musica = aleatorio(2)+1;
 
         dance(tiempo_musica,fd[1],Jugadores,jugadores);
-
-     
-
 
 
         // Leer los votos desde la tubería
