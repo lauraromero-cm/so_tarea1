@@ -1,8 +1,14 @@
+#include "pipes.h"
+int aleatorio(int num){
+
+    return  (rand() % num) ;
+
+}
 
 int generar_numero_aleatorio(int *array,int maxJugadores) {
     int voto;
     do {
-        voto = (rand() % maxJugadores) ;
+        voto =aleatorio(maxJugadores) ;
     } while(array[voto]!=0);
 
 
@@ -54,4 +60,49 @@ int JugadorMax(int *array, int length, int pos){
     }
 
     return jugador_max;  
+}
+
+
+void dance(int ciclos_musica,int *fd, int *jugadores_array, int length)
+{
+
+
+    printf("🎵 Empieza la música tiempo %d...\n",ciclos_musica);
+    for (int i = 0; i < ciclos_musica; i++)
+    {
+        sendMassive(fd,-4,jugadores_array,length);
+
+        // Simulación de movimientos de baile
+        printf("\t\t\t\t\t\t\t\t\t  \r");
+        printf("(>° °)>\t\t-\t🎵  Bailanding ...\r");
+        fflush(stdout);
+        sleep(1);
+
+        printf("\t\t\t\t\t\t\t\t\t  \r");
+        printf("<(° °<)\t\t-\t🎵  Bailanding ...\r");
+        fflush(stdout);
+        sleep(1);
+
+        printf("\t\t\t\t\t\t\t\t\t  \r");
+        printf("(>° °)>\t\t-\t🎵  Bailanding ...\r");
+        fflush(stdout);
+        sleep(1);
+
+
+        printf("\t\t\t\t\t\t\t\t\t  \r");
+        printf("<(° °<)\t\t-\t🎵  Bailanding ...\r");
+        fflush(stdout);
+        sleep(1);
+
+        printf("\t\t\t\t\t\t\t\t\t  \r");
+        printf("\\(° °)\t\t-\t🎵  Bailanding ...\r");
+        fflush(stdout);
+        sleep(1);
+        printf("\t\t\t\t\t\t\t\t\t  \r");
+    }
+    printf("\\(^_^)/\t\t \n");
+
+    printf("🎵 La música ha terminado.\n");
+    sendMassive(fd,-3,jugadores_array,length);
+    return ;
 }

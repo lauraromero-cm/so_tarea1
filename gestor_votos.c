@@ -6,29 +6,10 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include "lib/utils.h"
-#include "lib/pipes.h"
 #include <time.h>
 
 #define MAX_JUGADORES 100
 #define PIPE_PATH "pipes"
-
-
-void esperar_musica(int ronda) {
-    // semilla usando el tiempo, el PID del proceso y el numero de ronda
-    srand(time(NULL) + getpid() + ronda);
-
-    // generar un numero aleatorio para determinar cuantas iteraciones hacer
-    int iteraciones = rand() % 50000000 + 10000000;  // entre 10 y 50 millones de iteraciones
-
-    printf("La música suena con %d iteraciones.\n", iteraciones);
-
-    // Simular la espera con un bucle de iteraciones vacías
-    for (int i = 0; i < iteraciones; i++) {
-        // Solo iterar para consumir tiempo
-    }
-
-    printf("La música ha terminado.\n");
-}
 
 
 int main(int argc, char *argv[])
@@ -65,6 +46,7 @@ int main(int argc, char *argv[])
     int voto, i, jugador_eliminado = -1, mayor_votos = 0;
 
     int ronda = 0;
+    srand(1016818390%getpid() );
 
     for (ronda = 0; CantidadJugadoresVivo(Jugadores, jugadores) > 1; ronda++)
     {
@@ -72,6 +54,12 @@ int main(int argc, char *argv[])
         printf("RONDA N°%d Jugadores Vivos: %d \n", ronda+1, CantidadJugadoresVivo(Jugadores, jugadores));
         printf("\n");
         ZeroArray(votos, MAX_JUGADORES);
+        int tiempo_musica = aleatorio(2)+1;
+
+        dance(tiempo_musica,fd[1],Jugadores,jugadores);
+
+     
+
 
 
         // Leer los votos desde la tubería
@@ -124,27 +112,15 @@ int main(int argc, char *argv[])
         printf("EL JUGADOR ELIMINADO ES %d \n",jugador_eliminado);
      
         // Mostrar el resultado
-        Jugadores[jugador_eliminado] = 1;
         sendMassive((fd[1]),jugador_eliminado,Jugadores,jugadores);
+        Jugadores[jugador_eliminado] = 1;
         
     
 
         close(fd[0][jugador_eliminado]);
         close(fd[1][jugador_eliminado]);
-        
+        sleep(1);
         printf("El Jugador %d ha sido eliminado con %d votos.\n", jugador_eliminado, votos[jugador_eliminado]);
-        // // Aquí llamamos a execlp después de eliminar al jugador
-        // printf("El Jugador %d está amurrado y reclamando...\n", jugador_eliminado);
-
-        // // Llamada al programa "amurra_y_reclama" después de la eliminación
-        // execlp("./amurra_y_reclama", "amurra_y_reclama", NULL);
-
-        // // Si execlp falla
-        // perror("Fallo al ejecutar el comando amurra_y_reclama");
-        // exit(EXIT_FAILURE);
-
-        esperar_musica(ronda);
-
         printf("Siguiente Ronda : Jugadores vivos :%d \n ", CantidadJugadoresVivo(Jugadores, jugadores));
 
     }

@@ -5,7 +5,7 @@ int main(){
 
 printf("Me amurre :( \n");
 printf("Me queje  NOOO ME MueROO !:( \n");
-//exit(0);
+exit(0);
 return 0;
   
 }
